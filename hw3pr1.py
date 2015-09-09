@@ -130,46 +130,33 @@ def changeSpeed(filename, newsr):
     play( 'out.wav' )   # play the new file, 'out.wav'
     
 
+class Sound:
+    def __init__(self, samps, sr):
+        self.samps = samps
+        self.sr = sr
 
-def flipflop(filename):
-    """ flipflop swaps the halves of an audio file
-        input: filename, the name of the original file
-        output: no return value, but
-                this creates the sound file 'out.wav'
-                and plays it
-    """
-    print "Playing the original sound..."
-    play(filename)
-    
-    print "Reading in the sound data..."
-    samps, sr = readwav(filename)
-    
-    print "Computing new sound..."
-    # this gets the midpoint and calls it x
-    x = len(samps)/2
-    newsamps = samps[x:] + samps[:x] # flip flop
-    newsr = sr                       # no change to the sr
-    
-    writewav( newsamps, newsr, "out.wav" )
-    print "Playing new sound..."
-    play( 'out.wav' )
+    def __init__(self, filename):
+        self.samps, self.sr = readwav(filename)
 
+    def __repr__(self):
+        writewav( self.samps, self.sr, "out.wav" )
+        play( 'out.wav' )
+        return ''
 
+    def reverse(self):
+        return Sound(self.samps[::-1], self.sr)
 
+    def flipflop(self):
+        return Sound(self.samps[x:] + self.samps[:x], self.sr)
 
-# Sound function to write #1:  reverse
+    def volume(self, scale_factor):
+        return Sound(scale(self.samps, scale_factor), self.sr)
 
+    def static(self, probability_of_static):
+        return Sound(replace_some(self.samps, probability_of_static), self.sr)
 
-
-
-
-
-
-# Sound function to write #2:  volume
-
-
-
-
+    def save(self, filename):
+        writewav( self.samps, self.sr, filename)
 
 
 
