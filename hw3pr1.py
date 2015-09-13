@@ -105,33 +105,6 @@ def replace_some(L, chance_of_replacing):
 # below are functions that relate to sound-processing ...
 #
 
-
-# a function to make sure everything is working
-def test():
-    """ a test function that plays swfaith.wav
-        You'll need swfailt.wav in this folder.
-    """
-    play( 'swfaith.wav' )
-
-    
-# The example changeSpeed function
-def changeSpeed(filename, newsr):
-    """ changeSpeed allows the user to change an audio file's speed
-        input: filename, the name of the original file
-               newsr, the *new* sampling rate in samples per second
-        output: no return value; creates and plays the file 'out.wav'
-    """
-    samps, sr = readwav(filename)
-
-    print "The first 10 sound-pressure samples are\n", samps[:10]
-    print "The original number of samples per second is", sr
-    
-    newsamps = samps                        # no change to the sound
-    writewav( newsamps, newsr, "out.wav" )  # write data to out.wav
-    print "\nPlaying new sound..."
-    play( 'out.wav' )   # play the new file, 'out.wav'
-    
-
 class Sound:
     def __init__(self, filename = None):
         if filename is not None:
@@ -150,6 +123,12 @@ class Sound:
         ret = Sound()
         ret.samps = self.samps[::-1]
         ret.sr = self.sr
+        return ret
+
+    def changeSpeed(self, ratio):
+        ret = Sound()
+        ret.samps = self.samps
+        ret.sr = int(self.sr * ratio + 0.5)
         return ret
 
     def flipflop(self):
