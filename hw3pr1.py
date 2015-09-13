@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import random
 import math
+import wave
+wave.big_endian = 0
 from csaudio import play, readwav, writewav
 
 
@@ -131,32 +133,43 @@ def changeSpeed(filename, newsr):
     
 
 class Sound:
-    def __init__(self, samps, sr):
-        self.samps = samps
-        self.sr = sr
+    def __init__(self, filename = None):
+        if filename is not None:
+            self.samps, self.sr = readwav(filename)
 
-    def __init__(self, filename):
-        self.samps, self.sr = readwav(filename)
-
-    def __repr__(self):
+    def play(self):
         writewav( self.samps, self.sr, "out.wav" )
         play( 'out.wav' )
-        return ''
-
-    def reverse(self):
-        return Sound(self.samps[::-1], self.sr)
-
-    def flipflop(self):
-        return Sound(self.samps[x:] + self.samps[:x], self.sr)
-
-    def volume(self, scale_factor):
-        return Sound(scale(self.samps, scale_factor), self.sr)
-
-    def static(self, probability_of_static):
-        return Sound(replace_some(self.samps, probability_of_static), self.sr)
+        return self
 
     def save(self, filename):
         writewav( self.samps, self.sr, filename)
+        return self
+
+    def reverse(self):
+        ret = Sound()
+        ret.samps = self.samps[::-1]
+        ret.sr = self.sr
+        return ret
+
+    def flipflop(self):
+        x = len(self.samps)/2
+        ret = Sound()
+        ret.samps = self.samps[x:] + self.samps[:x]
+        ret.sr = self.sr
+        return ret
+
+    def volume(self, scale_factor):
+        ret = Sound()
+        ret.samps = scale(self.samps, scale_factor)
+        ret.sr = self.sr
+        return ret
+
+    def static(self, probability_of_static):
+        ret = Sound()
+        ret.samps = replace_some(self.samps, probability_of_static)
+        ret.sr = self.sr
+        return ret
 
 
 
